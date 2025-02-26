@@ -7,8 +7,10 @@ import { v4 as uuidv4 } from 'uuid';
 // Validator
 import validator from 'validator'
 
-// Readline for user input
-import readline from "node:readline";import { stdin as input, stdout as output } from "node:process";
+
+
+// Create file.txt
+import { appendFileSync } from 'node:fs';
 
 
 // 1st Function
@@ -50,26 +52,23 @@ function addAccount([firstName, lastName, email, age], uid){
     }
     console.log("Valid Age: ", validAge);
     
+    // Save
+    if (checker == true && validEmail == true && validAge == true){
+        user.push(uid);
+        try {
+            appendFileSync('text.txt', user.join(',') + '\n', 'utf8');
+            console.log('The "data to append" was appended to file!');
+          } catch (err) {
+            console.error("Error writing to file:", err);
+          } 
+          return true;
 
+    } else {
+        return false;
+    }
 }
 
-// Main Code
-const rl = readline.createInterface({ input, output });
+export default {generateUniqueID, addAccount};
 
-rl.question("Please enter your first name: ", (firstName) => {
-    rl.question("Please enter your last name: ", (lastName) => {
-        console.log("First Name:", firstName);
-        console.log("Last Name:", lastName);
-        var uid = generateUniqueID(firstName, lastName);
-        rl.question("Please enter your email: ", (email) => {
-            rl.question("Please enter your age: ", (age)  => {
-                console.log("Email:", email);
-                console.log("Age:", age);
-                addAccount([firstName, lastName, email, age], uid);
-                rl.close();
-            });   
-        });     
-    });
-});
 
 
